@@ -2,8 +2,8 @@ extends Node
 
 class_name Block
 
-const tile_health = [ 0, 0, 2, 3, 5, 8 ]
-const tile_score = [ 0, 0, 5, 10, 20, 50 ]
+const tile_health = [ 0, 0, 1, 2, 3, 5, 8, 8, 8, 8 ]
+const tile_score = [ 0, 0, 0, 5, 10, 20, 50, 100, 0, 0, 0 ]
 
 var tile
 var health

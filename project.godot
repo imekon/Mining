@@ -22,7 +22,7 @@ _global_script_class_icons={
 
 config/name="Mining"
 run/main_scene="res://scenes/Welcome.tscn"
-config/icon="res://icon.png"
+config/icon="res://images/miner.png"
 
 [input]
 

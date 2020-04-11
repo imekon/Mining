@@ -1,4 +1,4 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://fonts/MODES___.TTF" type="DynamicFontData" id=1]
 [ext_resource path="res://images/PC4+lT.png" type="Texture" id=2]
@@ -12,6 +12,14 @@ font_data = ExtResource( 1 )
 size = 20
 font_data = ExtResource( 1 )
 
+[sub_resource type="DynamicFont" id=4]
+size = 20
+font_data = ExtResource( 1 )
+
+[sub_resource type="DynamicFont" id=3]
+size = 20
+font_data = ExtResource( 1 )
+
 [node name="Welcome" type="Node2D"]
 script = ExtResource( 3 )
 
@@ -20,23 +28,36 @@ position = Vector2( 482, 193 )
 texture = ExtResource( 2 )
 
 [node name="Label" type="Label" parent="."]
-margin_left = 466.0
+margin_left = 19.0
 margin_top = 348.0
-margin_right = 610.0
+margin_right = 1011.0
 margin_bottom = 388.0
 custom_fonts/font = SubResource( 1 )
 text = "Mining"
+align = 1
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="Label2" type="Label" parent="."]
-margin_left = 21.0
-margin_top = 401.0
-margin_right = 997.0
-margin_bottom = 441.0
-custom_fonts/font = SubResource( 1 )
-text = "A game by Pete Goodwin"
+margin_left = 16.0
+margin_top = 400.0
+margin_right = 1004.0
+margin_bottom = 420.0
+custom_fonts/font = SubResource( 2 )
+text = "A game by Pete Goodwin for the 8 bits to infinity jam"
+align = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Label3" type="Label" parent="."]
+margin_left = 19.0
+margin_top = 435.0
+margin_right = 1008.0
+margin_bottom = 455.0
+custom_fonts/font = SubResource( 4 )
+text = "\"Sometimes we are the monsters\""
 align = 1
 __meta__ = {
 "_edit_use_anchors_": false
@@ -47,7 +68,7 @@ margin_left = 484.0
 margin_top = 510.0
 margin_right = 556.0
 margin_bottom = 536.0
-custom_fonts/font = SubResource( 2 )
+custom_fonts/font = SubResource( 3 )
 text = "Start"
 __meta__ = {
 "_edit_use_anchors_": false
