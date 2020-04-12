@@ -12,11 +12,11 @@ font_data = ExtResource( 1 )
 size = 20
 font_data = ExtResource( 1 )
 
-[sub_resource type="DynamicFont" id=4]
+[sub_resource type="DynamicFont" id=3]
 size = 20
 font_data = ExtResource( 1 )
 
-[sub_resource type="DynamicFont" id=3]
+[sub_resource type="DynamicFont" id=4]
 size = 20
 font_data = ExtResource( 1 )
 
@@ -56,7 +56,7 @@ margin_left = 19.0
 margin_top = 435.0
 margin_right = 1008.0
 margin_bottom = 455.0
-custom_fonts/font = SubResource( 4 )
+custom_fonts/font = SubResource( 3 )
 text = "\"Sometimes we are the monsters\""
 align = 1
 __meta__ = {
@@ -68,7 +68,7 @@ margin_left = 484.0
 margin_top = 510.0
 margin_right = 556.0
 margin_bottom = 536.0
-custom_fonts/font = SubResource( 3 )
+custom_fonts/font = SubResource( 4 )
 text = "Start"
 __meta__ = {
 "_edit_use_anchors_": false

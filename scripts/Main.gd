@@ -12,6 +12,7 @@ onready var digging_label = $CanvasLayer/DiggingLabel
 onready var digging_progress = $CanvasLayer/DiggingProgress
 
 onready var Monster = load("res://scenes/Monster.tscn")
+onready var Egg = load("res://scenes/Egg.tscn")
 
 var player_x
 var player_y
@@ -20,6 +21,8 @@ var player_score
 var digging_value
 
 var mine = []
+var monsters = []
+var eggs = []
 
 # Tiles
 # 0 - barrier, edge of the world
@@ -58,8 +61,29 @@ func _process(delta):
 		
 	try_move_player(dx, dy)
 	
+	for monster in monsters:
+		if monster.dx != 0 && monster.dy != 0:
+			try_move_monster(monster)
+	
 func try_move_player(dx, dy):
-	var block = mine[player_y + dy][player_x + dx]
+	var to_x = player_x + dx
+	var to_y = player_y + dy
+	
+	# check for monsters in the cube
+	for monster in monsters:
+		if monster.x == to_x && monster.y == to_y:
+			monster.health -= 1
+			if monster.health <= 0:
+				remove_child(monster)
+				monsters.erase(monster)
+				monster.queue_free()
+			else:
+				monster.wakeup()
+			digging_value = 0
+			set_digging_position()
+			return
+	
+	var block = mine[to_y][to_x]
 	if block == null:
 		move_player(dx, dy)
 		return
@@ -76,7 +100,34 @@ func try_move_player(dx, dy):
 		move_player(dx, dy)
 		
 	set_digging_position()
+	
+func try_move_monster(monster):
+	var to_x = monster.x + monster.dx
+	var to_y = monster.y + monster.dy
+	
+	if to_x < 1 || to_x > MINE_WIDTH - 1 || to_y < 1 || to_y > MINE_HEIGHT - 1:
+		monster.reset_deltas()
+		return
 		
+	if to_x == player_x && to_y == player_y:
+		monster.reset_deltas()
+		return
+		
+	for other_monster in monsters:
+		if other_monster == monster:
+			continue
+			
+		if to_x == other_monster.x && to_y == other_monster.y:
+			monster.reset_deltas()
+			return
+	
+	monster.x += monster.dx
+	monster.y += monster.dy
+	
+	monster.reset_deltas()
+	
+	monster.position = Vector2(monster.x * 32, monster.y * 32)
+	
 func move_player(dx, dy):
 	player_x += dx
 	player_y += dy
@@ -150,9 +201,14 @@ func build_mine():
 			y = randi() % (MINE_HEIGHT - 2) + 1
 			keep_looking = mine[y][x] == null
 		
+		monster.x = x
+		monster.y = y
 		monster.position = Vector2(x * 32, y * 32)
+		monsters.append(monster)
 		add_child(monster)
 		
+	monsters[0].wakeup()
+	
 	for y in range(0, MINE_HEIGHT):
 		for x in range(0, MINE_WIDTH):
 			if mine[y][x] != null:
