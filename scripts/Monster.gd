@@ -24,16 +24,23 @@ func _process(delta):
 				move_randomly()
 			
 			State.Fleeing:
-				pass
+				move_relative_player()
 				
 		time = 0
 	
-func wakeup():
-	state = State.Random
+func wakeup(flee):
+	if flee:
+		state = State.Fleeing
+	else:
+		state = State.Random
 
 func move_randomly():
 	dx = 1 - randi() % 3
 	dy = 1 - randi() % 3
+	
+func move_relative_player():
+	dx = clamp(x - Global.player_x, -1, 1)
+	dy = clamp(y - Global.player_y, -1, 1)
 	
 func reset_deltas():
 	dx = 0

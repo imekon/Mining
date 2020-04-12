@@ -14,8 +14,6 @@ onready var digging_progress = $CanvasLayer/DiggingProgress
 onready var Monster = load("res://scenes/Monster.tscn")
 onready var Egg = load("res://scenes/Egg.tscn")
 
-var player_x
-var player_y
 var player_score
 
 var digging_value
@@ -36,8 +34,8 @@ var eggs = []
 
 func _ready():
 	randomize()
-	player_x = randi() % (MINE_WIDTH - 2) + 1
-	player_y = 1
+	Global.player_x = randi() % (MINE_WIDTH - 2) + 1
+	Global.player_y = 1
 	player_score = 0
 	digging_value = 0
 	set_player_position()
@@ -66,10 +64,10 @@ func _process(delta):
 			try_move_monster(monster)
 	
 func try_move_player(dx, dy):
-	var to_x = player_x + dx
-	var to_y = player_y + dy
+	var to_x = Global.player_x + dx
+	var to_y = Global.player_y + dy
 	
-	# check for monsters in the cube
+	# check for monsters in the way
 	for monster in monsters:
 		if monster.x == to_x && monster.y == to_y:
 			monster.health -= 1
@@ -78,7 +76,17 @@ func try_move_player(dx, dy):
 				monsters.erase(monster)
 				monster.queue_free()
 			else:
-				monster.wakeup()
+				monster.wakeup(true)
+			digging_value = 0
+			set_digging_position()
+			return
+			
+	# check for eggs in the way
+	for egg in eggs:
+		if egg.x == to_x && egg.y == to_y:
+			remove_child(egg)
+			eggs.erase(egg)
+			egg.queue_free()
 			digging_value = 0
 			set_digging_position()
 			return
@@ -96,7 +104,7 @@ func try_move_player(dx, dy):
 	digging_value = block.health * 100 / Block.tile_health[block.tile]
 	
 	if block.health <= 0:
-		destroy_block(player_x + dx, player_y + dy, block)
+		destroy_block(Global.player_x + dx, Global.player_y + dy, block)
 		move_player(dx, dy)
 		
 	set_digging_position()
@@ -105,11 +113,11 @@ func try_move_monster(monster):
 	var to_x = monster.x + monster.dx
 	var to_y = monster.y + monster.dy
 	
-	if to_x < 1 || to_x > MINE_WIDTH - 1 || to_y < 1 || to_y > MINE_HEIGHT - 1:
+	if to_x < 1 || to_x > MINE_WIDTH - 2 || to_y < 1 || to_y > MINE_HEIGHT - 2:
 		monster.reset_deltas()
 		return
 		
-	if to_x == player_x && to_y == player_y:
+	if to_x == Global.player_x && to_y == Global.player_y:
 		monster.reset_deltas()
 		return
 		
@@ -129,13 +137,13 @@ func try_move_monster(monster):
 	monster.position = Vector2(monster.x * 32, monster.y * 32)
 	
 func move_player(dx, dy):
-	player_x += dx
-	player_y += dy
+	Global.player_x += dx
+	Global.player_y += dy
 	set_player_position()
 	
 func set_player_position():
-	player.position.x = player_x * MINE_CELL_SIZE
-	player.position.y = player_y * MINE_CELL_SIZE
+	player.position.x = Global.player_x * MINE_CELL_SIZE
+	player.position.y = Global.player_y * MINE_CELL_SIZE
 	
 func set_digging_position():
 	if digging_value == 0:
@@ -189,10 +197,9 @@ func build_mine():
 		mine[0][i].tile = 0
 		mine[MINE_HEIGHT - 1][i].tile = 0
 		
-	mine[player_y][player_x] = null
+	mine[Global.player_y][Global.player_x] = null
 	
 	for i in range(0, NUMBER_MONSTERS):
-		var monster = Monster.instance()
 		var keep_looking = true
 		var x
 		var y
@@ -201,13 +208,30 @@ func build_mine():
 			y = randi() % (MINE_HEIGHT - 2) + 1
 			keep_looking = mine[y][x] == null
 		
+		var monster = Monster.instance()
 		monster.x = x
 		monster.y = y
 		monster.position = Vector2(x * 32, y * 32)
 		monsters.append(monster)
 		add_child(monster)
 		
-	monsters[0].wakeup()
+	monsters[0].wakeup(false)
+	
+	for i in range(0, 30):
+		var keep_looking = true
+		var x
+		var y
+		while keep_looking:
+			x = randi() % (MINE_WIDTH - 2) + 1
+			y = randi() % (MINE_HEIGHT - 2) + 1
+			keep_looking = mine[y][x] != null
+		
+		var egg = Egg.instance()
+		egg.x = x
+		egg.y = y
+		egg.position = Vector2(x * 32, y * 32)
+		eggs.append(egg)
+		add_child(egg)
 	
 	for y in range(0, MINE_HEIGHT):
 		for x in range(0, MINE_WIDTH):

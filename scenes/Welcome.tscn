@@ -53,9 +53,9 @@ __meta__ = {
 
 [node name="Label3" type="Label" parent="."]
 margin_left = 19.0
-margin_top = 435.0
+margin_top = 470.0
 margin_right = 1008.0
-margin_bottom = 455.0
+margin_bottom = 490.0
 custom_fonts/font = SubResource( 3 )
 text = "\"Sometimes we are the monsters\""
 align = 1

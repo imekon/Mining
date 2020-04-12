@@ -24,6 +24,10 @@ config/name="Mining"
 run/main_scene="res://scenes/Welcome.tscn"
 config/icon="res://images/miner.png"
 
+[autoload]
+
+Global="*res://scripts/Global.gd"
+
 [input]
 
 up={
