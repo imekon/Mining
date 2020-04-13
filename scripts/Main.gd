@@ -10,6 +10,7 @@ onready var player = $Player
 onready var score_label = $CanvasLayer/ScoreLabel
 onready var digging_label = $CanvasLayer/DiggingLabel
 onready var digging_progress = $CanvasLayer/DiggingProgress
+onready var mask = $Player/Mask
 
 onready var hit1 = $Sounds/Hit1
 onready var hit2 = $Sounds/Hit2
@@ -21,7 +22,7 @@ onready var Monster = load("res://scenes/Monster.tscn")
 onready var Egg = load("res://scenes/Egg.tscn")
 
 var player_score
-
+var mask_scaling
 var digging_value
 
 var mine = []
@@ -44,6 +45,7 @@ func _ready():
 	Global.player_x = randi() % (MINE_WIDTH - 2) + 1
 	Global.player_y = 1
 	player_score = 0
+	mask_scaling = 0.5
 	digging_value = 0
 	
 	hit_sounds.append(hit1)
@@ -76,6 +78,11 @@ func _process(delta):
 	for monster in monsters:
 		if monster.dx != 0 && monster.dy != 0:
 			try_move_monster(monster)
+			
+	if mask_scaling < 1:
+		mask_scaling += delta / 500
+		mask.scale.x = mask_scaling
+		mask.scale.y = mask_scaling
 	
 func try_move_player(dx, dy):
 	var to_x = Global.player_x + dx
@@ -101,6 +108,11 @@ func try_move_player(dx, dy):
 			remove_child(egg)
 			eggs.erase(egg)
 			egg.queue_free()
+			mask_scaling -= 0.1
+			if mask_scaling < 0.5:
+				mask_scaling = 0.5
+			mask.scale.x = mask_scaling
+			mask.scale.y = mask_scaling
 			digging_value = 0
 			set_digging_position()
 			return
@@ -176,7 +188,7 @@ func set_digging_position():
 	digging_progress.value = digging_value
 	
 func destroy_block(x, y, block):
-	player_score += Block.tile_score[block.tile]
+	player_score += int(Block.tile_score[block.tile] * mask_scaling)
 	mine[y][x] = null
 	tilemap.set_cell(x, y, 1)
 	block.queue_free()
@@ -190,9 +202,13 @@ func build_mine():
 			var percent = randi() % 100
 			if percent > 80:
 				tile = randi() % 3 + 6
-			else:
-				if percent > 90:
-					tile = 9
+
+			if percent > 90:
+				tile = 9
+			
+			if percent > 95:
+				tile = 10
+				
 			block.tile = tile
 			block.setup()
 			row.append(block)
