@@ -11,6 +11,12 @@ onready var score_label = $CanvasLayer/ScoreLabel
 onready var digging_label = $CanvasLayer/DiggingLabel
 onready var digging_progress = $CanvasLayer/DiggingProgress
 
+onready var hit1 = $Sounds/Hit1
+onready var hit2 = $Sounds/Hit2
+onready var hit3 = $Sounds/Hit3
+onready var hit4 = $Sounds/Hit4
+onready var hit5 = $Sounds/Hit5
+
 onready var Monster = load("res://scenes/Monster.tscn")
 onready var Egg = load("res://scenes/Egg.tscn")
 
@@ -21,6 +27,7 @@ var digging_value
 var mine = []
 var monsters = []
 var eggs = []
+var hit_sounds = []
 
 # Tiles
 # 0 - barrier, edge of the world
@@ -38,6 +45,13 @@ func _ready():
 	Global.player_y = 1
 	player_score = 0
 	digging_value = 0
+	
+	hit_sounds.append(hit1)
+	hit_sounds.append(hit2)
+	hit_sounds.append(hit3)
+	hit_sounds.append(hit4)
+	hit_sounds.append(hit5)
+	
 	set_player_position()
 	set_digging_position()
 	build_mine()
@@ -99,6 +113,7 @@ func try_move_player(dx, dy):
 	if block.tile == 0:
 		return
 	
+	play_hit_sound()
 	block.health -= 1
 	
 	digging_value = block.health * 100 / Block.tile_health[block.tile]
@@ -135,6 +150,11 @@ func try_move_monster(monster):
 	monster.reset_deltas()
 	
 	monster.position = Vector2(monster.x * 32, monster.y * 32)
+	
+func play_hit_sound():
+	var index = randi() % 5
+	var hit = hit_sounds[index]
+	hit.play()
 	
 func move_player(dx, dy):
 	Global.player_x += dx
