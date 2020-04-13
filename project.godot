@@ -20,7 +20,7 @@ _global_script_class_icons={
 
 [application]
 
-config/name="Mining"
+config/name="Don't Break Any Eggs!"
 run/main_scene="res://scenes/Welcome.tscn"
 config/icon="res://images/miner.png"
 

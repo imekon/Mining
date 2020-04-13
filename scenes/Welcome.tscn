@@ -33,7 +33,7 @@ margin_top = 348.0
 margin_right = 1011.0
 margin_bottom = 388.0
 custom_fonts/font = SubResource( 1 )
-text = "Mining"
+text = "Don't Break Any Eggs!"
 align = 1
 __meta__ = {
 "_edit_use_anchors_": false
