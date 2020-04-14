@@ -1,0 +1,69 @@
+[gd_scene load_steps=6 format=2]
+
+[ext_resource path="res://fonts/MODES___.TTF" type="DynamicFontData" id=1]
+[ext_resource path="res://scripts/Instructions.gd" type="Script" id=2]
+
+[sub_resource type="DynamicFont" id=1]
+size = 40
+font_data = ExtResource( 1 )
+
+[sub_resource type="DynamicFont" id=2]
+size = 20
+font_data = ExtResource( 1 )
+
+[sub_resource type="DynamicFont" id=3]
+size = 20
+font_data = ExtResource( 1 )
+
+[node name="Instructions" type="Node2D"]
+script = ExtResource( 2 )
+
+[node name="Label" type="Label" parent="."]
+margin_left = 22.0
+margin_top = 18.0
+margin_right = 1008.0
+margin_bottom = 58.0
+custom_fonts/font = SubResource( 1 )
+text = "Instructions"
+align = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="RichTextLabel" type="RichTextLabel" parent="."]
+margin_left = 22.0
+margin_top = 93.0
+margin_right = 1008.0
+margin_bottom = 532.0
+custom_fonts/normal_font = SubResource( 2 )
+bbcode_enabled = true
+bbcode_text = "\"Don't break any eggs!\"
+
+This is loosely based on a Star Trek TOS episode named, [url=https://en.wikipedia.org/wiki/The_Devil_in_the_Dark]\"The Devil in the Dark\".[/url]
+
+In this game, you're a miner digging through rocks to get precious minerals, coal or diamonds. You will also find eggs and monsters.
+
+The monsters are NOT your enemies!"
+text = "\"Don't break any eggs!\"
+
+This is loosely based on a Star Trek TOS episode named, \"The Devil in the Dark\".
+
+In this game, you're a miner digging through rocks to get precious minerals, coal or diamonds. You will also find eggs and monsters.
+
+The monsters are NOT your enemies!"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="RestartButton" type="Button" parent="."]
+margin_left = 465.0
+margin_top = 556.0
+margin_right = 561.0
+margin_bottom = 582.0
+custom_fonts/font = SubResource( 3 )
+text = "Restart"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+[connection signal="meta_clicked" from="RichTextLabel" to="." method="on_RichTextLabel_meta_clicked"]
+[connection signal="pressed" from="RestartButton" to="." method="on_RestartButton_pressed"]

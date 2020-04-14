@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=2]
+[gd_scene load_steps=16 format=2]
 
 [ext_resource path="res://images/tiles.png" type="Texture" id=1]
 [ext_resource path="res://images/mask.png" type="Texture" id=2]
@@ -179,6 +179,10 @@ font_data = ExtResource( 8 )
 size = 20
 font_data = ExtResource( 8 )
 
+[sub_resource type="DynamicFont" id=5]
+size = 20
+font_data = ExtResource( 8 )
+
 [node name="Main" type="Node2D"]
 script = ExtResource( 5 )
 
@@ -252,6 +256,17 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
+[node name="ReadmeButton" type="Button" parent="CanvasLayer"]
+margin_left = 575.0
+margin_top = 556.0
+margin_right = 695.0
+margin_bottom = 582.0
+custom_fonts/font = SubResource( 5 )
+text = "Readme..."
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
 [node name="Sounds" type="Node2D" parent="."]
 
 [node name="Hit1" type="AudioStreamPlayer" parent="Sounds"]
@@ -274,3 +289,4 @@ bus = "Effects"
 stream = ExtResource( 4 )
 bus = "Effects"
 [connection signal="pressed" from="CanvasLayer/EnableSoundButton" to="." method="on_EnableSoundButton_pressed"]
+[connection signal="pressed" from="CanvasLayer/ReadmeButton" to="." method="on_ReadmeButton_pressed"]
