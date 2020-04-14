@@ -11,6 +11,7 @@ onready var score_label = $CanvasLayer/ScoreLabel
 onready var digging_label = $CanvasLayer/DiggingLabel
 onready var digging_progress = $CanvasLayer/DiggingProgress
 onready var mask = $Player/Mask
+onready var enable_sounds_button = $CanvasLayer/EnableSoundButton
 
 onready var hit1 = $Sounds/Hit1
 onready var hit2 = $Sounds/Hit2
@@ -24,6 +25,7 @@ onready var Egg = load("res://scenes/Egg.tscn")
 var player_score
 var mask_scaling
 var digging_value
+var enable_sounds
 
 var mine = []
 var monsters = []
@@ -47,6 +49,7 @@ func _ready():
 	player_score = 0
 	mask_scaling = 0.5
 	digging_value = 0
+	enable_sounds = true
 	
 	hit_sounds.append(hit1)
 	hit_sounds.append(hit2)
@@ -76,7 +79,7 @@ func _process(delta):
 	try_move_player(dx, dy)
 	
 	for monster in monsters:
-		if monster.dx != 0 && monster.dy != 0:
+		if monster.is_awake():
 			try_move_monster(monster)
 			
 	if mask_scaling < 1:
@@ -90,7 +93,7 @@ func try_move_player(dx, dy):
 	
 	# check for monsters in the way
 	for monster in monsters:
-		if monster.x == to_x && monster.y == to_y:
+		if (monster.x == to_x) && (monster.y == to_y):
 			monster.health -= 1
 			if monster.health <= 0:
 				remove_child(monster)
@@ -104,7 +107,7 @@ func try_move_player(dx, dy):
 			
 	# check for eggs in the way
 	for egg in eggs:
-		if egg.x == to_x && egg.y == to_y:
+		if (egg.x == to_x) && (egg.y == to_y):
 			remove_child(egg)
 			eggs.erase(egg)
 			egg.queue_free()
@@ -137,33 +140,44 @@ func try_move_player(dx, dy):
 	set_digging_position()
 	
 func try_move_monster(monster):
+	# print("try to move monster: " + str(monster.id))
+	
 	var to_x = monster.x + monster.dx
 	var to_y = monster.y + monster.dy
 	
-	if to_x < 1 || to_x > MINE_WIDTH - 2 || to_y < 1 || to_y > MINE_HEIGHT - 2:
+	if (to_x < 1) || (to_x > MINE_WIDTH - 2) || (to_y < 1) || (to_y > MINE_HEIGHT - 2):
+		print("monster trying to move out of mine: " + str(monster.id))
 		monster.reset_deltas()
+		monster.goto_sleep()
 		return
 		
-	if to_x == Global.player_x && to_y == Global.player_y:
-		monster.reset_deltas()
+	if (to_x == Global.player_x) && (to_y == Global.player_y):
+		print("monster trying to move into player: " + str(monster.id))
+		# monster.reset_deltas()
 		return
 		
 	for other_monster in monsters:
-		if other_monster == monster:
+		if other_monster.id == monster.id:
 			continue
 			
-		if to_x == other_monster.x && to_y == other_monster.y:
-			monster.reset_deltas()
+		if (to_x == other_monster.x) && (to_y == other_monster.y):
+			print("monster trying to move into other monster: " + str(monster.id))
+			# monster.reset_deltas()
 			return
 	
 	monster.x += monster.dx
 	monster.y += monster.dy
+	
+	print("monster moving " + str(monster.id) + ": " + str(monster.x) + ", " + str(monster.y))
 	
 	monster.reset_deltas()
 	
 	monster.position = Vector2(monster.x * 32, monster.y * 32)
 	
 func play_hit_sound():
+	if !enable_sounds:
+		return
+		
 	var index = randi() % 5
 	var hit = hit_sounds[index]
 	hit.play()
@@ -222,7 +236,7 @@ func build_mine():
 		
 		for j in range(0, h):
 			for i in range(0, w):
-				if j + y < MINE_HEIGHT - 2 && i + x < MINE_WIDTH - 2:
+				if (j + y < MINE_HEIGHT - 2) && (i + x < MINE_WIDTH - 2):
 					mine[j + y][i + x] = null
 				
 	for i in range(0, MINE_HEIGHT):
@@ -245,6 +259,7 @@ func build_mine():
 			keep_looking = mine[y][x] == null
 		
 		var monster = Monster.instance()
+		monster.id = i
 		monster.x = x
 		monster.y = y
 		monster.position = Vector2(x * 32, y * 32)
@@ -273,3 +288,7 @@ func build_mine():
 		for x in range(0, MINE_WIDTH):
 			if mine[y][x] != null:
 				tilemap.set_cell(x, y, mine[y][x].tile)
+
+
+func on_EnableSoundButton_pressed():
+	enable_sounds = enable_sounds_button.pressed
