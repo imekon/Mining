@@ -19,6 +19,8 @@ onready var hit3 = $Sounds/Hit3
 onready var hit4 = $Sounds/Hit4
 onready var hit5 = $Sounds/Hit5
 
+onready var explosion = $Sounds/Explosion
+
 onready var Monster = load("res://scenes/Monster.tscn")
 onready var Egg = load("res://scenes/Egg.tscn")
 
@@ -94,30 +96,13 @@ func try_move_player(dx, dy):
 	# check for monsters in the way
 	for monster in monsters:
 		if (monster.x == to_x) && (monster.y == to_y):
-			monster.health -= 1
-			if monster.health <= 0:
-				remove_child(monster)
-				monsters.erase(monster)
-				monster.queue_free()
-			else:
-				monster.wakeup(true)
-			digging_value = 0
-			set_digging_position()
+			damage_monster(monster, 1)
 			return
 			
 	# check for eggs in the way
 	for egg in eggs:
 		if (egg.x == to_x) && (egg.y == to_y):
-			remove_child(egg)
-			eggs.erase(egg)
-			egg.queue_free()
-			mask_scaling -= 0.1
-			if mask_scaling < 0.5:
-				mask_scaling = 0.5
-			mask.scale.x = mask_scaling
-			mask.scale.y = mask_scaling
-			digging_value = 0
-			set_digging_position()
+			damage_egg(egg)
 			return
 	
 	var block = mine[to_y][to_x]
@@ -126,6 +111,10 @@ func try_move_player(dx, dy):
 		return
 		
 	if block.tile == 0:
+		return
+		
+	if block.tile == 10:
+		process_exploding_gas(to_x, to_y)
 		return
 	
 	play_hit_sound()
@@ -146,13 +135,13 @@ func try_move_monster(monster):
 	var to_y = monster.y + monster.dy
 	
 	if (to_x < 1) || (to_x > MINE_WIDTH - 2) || (to_y < 1) || (to_y > MINE_HEIGHT - 2):
-		print("monster trying to move out of mine: " + str(monster.id))
+		# print("monster trying to move out of mine: " + str(monster.id))
 		monster.reset_deltas()
 		monster.goto_sleep()
 		return
 		
 	if (to_x == Global.player_x) && (to_y == Global.player_y):
-		print("monster trying to move into player: " + str(monster.id))
+		# print("monster trying to move into player: " + str(monster.id))
 		# monster.reset_deltas()
 		return
 		
@@ -161,18 +150,73 @@ func try_move_monster(monster):
 			continue
 			
 		if (to_x == other_monster.x) && (to_y == other_monster.y):
-			print("monster trying to move into other monster: " + str(monster.id))
+			# print("monster trying to move into other monster: " + str(monster.id))
 			# monster.reset_deltas()
 			return
 	
 	monster.x += monster.dx
 	monster.y += monster.dy
 	
-	print("monster moving " + str(monster.id) + ": " + str(monster.x) + ", " + str(monster.y))
+	# print("monster moving " + str(monster.id) + ": " + str(monster.x) + ", " + str(monster.y))
 	
 	monster.reset_deltas()
 	
 	monster.position = Vector2(monster.x * 32, monster.y * 32)
+	
+func damage_monster(monster, damage):
+	monster.health -= damage
+	if monster.health <= 0:
+		remove_child(monster)
+		monsters.erase(monster)
+		monster.queue_free()
+	else:
+		monster.wakeup(true)
+
+	digging_value = 0
+	set_digging_position()
+	
+func damage_egg(egg):
+	remove_child(egg)
+	eggs.erase(egg)
+	egg.queue_free()
+	mask_scaling -= 0.1
+	if mask_scaling < 0.5:
+		mask_scaling = 0.5
+	mask.scale.x = mask_scaling
+	mask.scale.y = mask_scaling
+	digging_value = 0
+	set_digging_position()
+	
+func process_exploding_gas(to_x, to_y):
+	var hit_monsters = []
+	var hit_eggs = []
+	
+	for y in range(to_y - 1, to_y + 2):
+		for x in range(to_x - 1, to_x + 2):
+			if mine[y][x] != null:
+				if mine[y][x].tile != 0:
+					mine[y][x] = null
+					tilemap.set_cell(x, y, 1)
+			
+			for monster in monsters:
+				if (monster.x == x) && (monster.y == y):
+					hit_monsters.append(monster)
+					
+			for egg in eggs:
+				if (egg.x == x) && (egg.y == y):
+					hit_eggs.append(egg)
+	
+	for monster in hit_monsters:
+		damage_monster(monster, 5)
+		
+	for egg in hit_eggs:
+		damage_egg(egg)
+		
+	player_score -= 100
+	if player_score < 0:
+		player_score = 0
+		
+	play_explosion_sound()
 	
 func play_hit_sound():
 	if !enable_sounds:
@@ -181,6 +225,12 @@ func play_hit_sound():
 	var index = randi() % 5
 	var hit = hit_sounds[index]
 	hit.play()
+	
+func play_explosion_sound():
+	if !enable_sounds:
+		return
+
+	explosion.play()
 	
 func move_player(dx, dy):
 	Global.player_x += dx
