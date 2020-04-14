@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=2]
+[gd_scene load_steps=20 format=2]
 
 [ext_resource path="res://images/tiles.png" type="Texture" id=1]
 [ext_resource path="res://images/mask.png" type="Texture" id=2]
@@ -184,6 +184,18 @@ font_data = ExtResource( 8 )
 size = 20
 font_data = ExtResource( 8 )
 
+[sub_resource type="DynamicFont" id=6]
+size = 20
+font_data = ExtResource( 8 )
+
+[sub_resource type="DynamicFont" id=7]
+size = 20
+font_data = ExtResource( 8 )
+
+[sub_resource type="DynamicFont" id=8]
+size = 20
+font_data = ExtResource( 8 )
+
 [node name="Main" type="Node2D"]
 script = ExtResource( 5 )
 
@@ -264,6 +276,39 @@ margin_right = 695.0
 margin_bottom = 582.0
 custom_fonts/font = SubResource( 5 )
 text = "Readme..."
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="MineralLabel" type="Label" parent="CanvasLayer"]
+margin_left = 32.0
+margin_top = 56.0
+margin_right = 164.0
+margin_bottom = 76.0
+custom_fonts/font = SubResource( 6 )
+text = "Minerals: 0"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="CoalLabel" type="Label" parent="CanvasLayer"]
+margin_left = 32.0
+margin_top = 88.0
+margin_right = 116.0
+margin_bottom = 108.0
+custom_fonts/font = SubResource( 7 )
+text = "Coal: 0"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="DiamondsLabel" type="Label" parent="CanvasLayer"]
+margin_left = 32.0
+margin_top = 120.0
+margin_right = 164.0
+margin_bottom = 140.0
+custom_fonts/font = SubResource( 8 )
+text = "Diamonds: 0"
 __meta__ = {
 "_edit_use_anchors_": false
 }

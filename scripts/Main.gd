@@ -7,6 +7,9 @@ const NUMBER_MONSTERS = 10
 
 onready var tilemap = $TileMap
 onready var player = $Player
+onready var mineral_label =$CanvasLayer/MineralLabel
+onready var coal_label = $CanvasLayer/CoalLabel
+onready var diamond_label = $CanvasLayer/DiamondsLabel
 onready var score_label = $CanvasLayer/ScoreLabel
 onready var digging_label = $CanvasLayer/DiggingLabel
 onready var digging_progress = $CanvasLayer/DiggingProgress
@@ -25,6 +28,9 @@ onready var Monster = load("res://scenes/Monster.tscn")
 onready var Egg = load("res://scenes/Egg.tscn")
 
 var player_score
+var mineral_score
+var coal_score
+var diamond_score
 var mask_scaling
 var digging_value
 var enable_sounds
@@ -49,6 +55,9 @@ func _ready():
 	Global.player_x = randi() % (MINE_WIDTH - 2) + 1
 	Global.player_y = 1
 	player_score = 0
+	mineral_score = 0
+	coal_score = 0
+	diamond_score = 0
 	mask_scaling = 0.5
 	digging_value = 0
 	enable_sounds = true
@@ -65,6 +74,9 @@ func _ready():
 	
 func _process(delta):
 	score_label.text = 'Score: ' + str(player_score)
+	mineral_label.text = 'Minerals: ' + str(mineral_score)
+	coal_label.text = 'Coal: ' + str(coal_score)
+	diamond_label.text = 'Diamonds: ' + str(diamond_score)
 	
 	var dx = 0
 	var dy = 0
@@ -123,6 +135,18 @@ func try_move_player(dx, dy):
 	digging_value = block.health * 100 / Block.tile_health[block.tile]
 	
 	if block.health <= 0:
+		match block.tile:
+			3:
+				mineral_score += 1
+			4:
+				mineral_score += 2
+			5:
+				mineral_score += 3
+			6:
+				coal_score += 1
+			7:
+				diamond_score += 1
+
 		destroy_block(Global.player_x + dx, Global.player_y + dy, block)
 		move_player(dx, dy)
 		
