@@ -3,7 +3,16 @@ extends Node2D
 const MINE_WIDTH = 64
 const MINE_HEIGHT = 32
 const MINE_CELL_SIZE = 32
+const MINE_BAND1 = 90
+const MINE_BAND2 = 92
+const MINE_BAND3 = 95
 const NUMBER_MONSTERS = 10
+
+const NOISE_SEED_RANGE = 2048
+const NOISE_OCTAVES = 2
+const NOISE_PERIOD = 64
+const NOISE_PERSISTANCE = 32
+const NOISE_LACUNARITY = 1
 
 onready var tilemap = $TileMap
 onready var player = $Player
@@ -282,19 +291,28 @@ func destroy_block(x, y, block):
 	block.queue_free()
 	
 func build_mine():
+	var noise = OpenSimplexNoise.new()
+	noise.seed = randi() % NOISE_SEED_RANGE
+	noise.octaves = NOISE_OCTAVES
+	noise.period = NOISE_PERIOD
+	noise.persistence = NOISE_PERSISTANCE
+	noise.lacunarity = NOISE_LACUNARITY
+	
 	for y in range(0, MINE_HEIGHT):
 		var row = []
 		for x in range(0, MINE_WIDTH):
+			var tile = int((noise.get_noise_2d(x, y) + 1) * 1024) % 4 + 2
+
 			var block = Block.new()
-			var tile = randi() % 4 + 2
+
 			var percent = randi() % 100
-			if percent > 80:
+			if percent > MINE_BAND1:
 				tile = randi() % 3 + 6
 
-			if percent > 90:
+			if percent > MINE_BAND2:
 				tile = 9
 			
-			if percent > 95:
+			if percent > MINE_BAND3:
 				tile = 10
 				
 			block.tile = tile
