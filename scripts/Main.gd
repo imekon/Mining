@@ -367,5 +367,3 @@ func build_mine():
 func on_EnableSoundButton_pressed():
 	enable_sounds = enable_sounds_button.pressed
 
-func on_ReadmeButton_pressed():
-	get_tree().change_scene("res://scenes/Instructions.tscn")

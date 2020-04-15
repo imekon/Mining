@@ -1,0 +1,98 @@
+[gd_scene load_steps=6 format=2]
+
+[ext_resource path="res://fonts/MODES___.TTF" type="DynamicFontData" id=1]
+[ext_resource path="res://scripts/Credits.gd" type="Script" id=2]
+
+[sub_resource type="DynamicFont" id=3]
+size = 20
+font_data = ExtResource( 1 )
+
+[sub_resource type="DynamicFont" id=1]
+size = 40
+font_data = ExtResource( 1 )
+
+[sub_resource type="DynamicFont" id=2]
+size = 20
+font_data = ExtResource( 1 )
+
+[node name="Credits" type="Node2D"]
+script = ExtResource( 2 )
+
+[node name="RichTextLabel" type="RichTextLabel" parent="."]
+margin_left = 40.0
+margin_top = 66.0
+margin_right = 986.0
+margin_bottom = 534.0
+custom_fonts/normal_font = SubResource( 3 )
+bbcode_enabled = true
+bbcode_text = "\"Don't Break Any Eggs\"
+
+Copyright (c) 2020 Pete Goodwin
+
+All the artwork is by me, as well as the sound effects used in this game.
+
+The Mono font
+
+ModeSeven is based on the bitmap font in Teletext televisions, 1980s-vintage Videotext terminals (such as the Prestel system used in
+the UK), and the BBC Micro computer.  (The name derives from the BBC Micro screen mode which used the teletext character generator.)
+
+This font looks \"natural\" at a size of 20 pixels, or any multiple thereof. However, it has been hinted as to scale as well as an ex-bitmap font
+can be expected to.
+
+This font was created by hand with Fontographer 4.1.2 on a Macintosh The character definitions were worked out from a bitmap version of the
+Teletext font created by James Fidell, and included in xbeeb (a BBC Micro emulator for UNIX/X11).  The spacing of the original has been
+preserved, which is why many character shapes are aligned to the right of their cells.
+
+This font is freely distributable.  If you use it on the cover of a book, CD, magazine or something else,  I'd appreciate a copy, though.
+
+ -- acb
+acb@dev.null.org"
+text = "\"Don't Break Any Eggs\"
+
+Copyright (c) 2020 Pete Goodwin
+
+All the artwork is by me, as well as the sound effects used in this game.
+
+The Mono font
+
+ModeSeven is based on the bitmap font in Teletext televisions, 1980s-vintage Videotext terminals (such as the Prestel system used in
+the UK), and the BBC Micro computer.  (The name derives from the BBC Micro screen mode which used the teletext character generator.)
+
+This font looks \"natural\" at a size of 20 pixels, or any multiple thereof. However, it has been hinted as to scale as well as an ex-bitmap font
+can be expected to.
+
+This font was created by hand with Fontographer 4.1.2 on a Macintosh The character definitions were worked out from a bitmap version of the
+Teletext font created by James Fidell, and included in xbeeb (a BBC Micro emulator for UNIX/X11).  The spacing of the original has been
+preserved, which is why many character shapes are aligned to the right of their cells.
+
+This font is freely distributable.  If you use it on the cover of a book, CD, magazine or something else,  I'd appreciate a copy, though.
+
+ -- acb
+acb@dev.null.org"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Label" type="Label" parent="."]
+margin_top = 13.0
+margin_right = 1025.0
+margin_bottom = 53.0
+custom_fonts/font = SubResource( 1 )
+text = "Credits"
+align = 1
+__meta__ = {
+"_edit_lock_": true,
+"_edit_use_anchors_": false
+}
+
+[node name="OKButton" type="Button" parent="."]
+margin_left = 482.0
+margin_top = 534.0
+margin_right = 542.0
+margin_bottom = 560.0
+custom_fonts/font = SubResource( 2 )
+text = "OK"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+[connection signal="pressed" from="OKButton" to="." method="on_OKButton_pressed"]

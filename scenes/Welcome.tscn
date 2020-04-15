@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=10 format=2]
 
 [ext_resource path="res://fonts/MODES___.TTF" type="DynamicFontData" id=1]
 [ext_resource path="res://images/PC4+lT.png" type="Texture" id=2]
@@ -17,6 +17,14 @@ size = 20
 font_data = ExtResource( 1 )
 
 [sub_resource type="DynamicFont" id=4]
+size = 20
+font_data = ExtResource( 1 )
+
+[sub_resource type="DynamicFont" id=5]
+size = 20
+font_data = ExtResource( 1 )
+
+[sub_resource type="DynamicFont" id=6]
 size = 20
 font_data = ExtResource( 1 )
 
@@ -64,13 +72,37 @@ __meta__ = {
 }
 
 [node name="StartButton" type="Button" parent="."]
-margin_left = 484.0
+margin_left = 326.0
 margin_top = 510.0
-margin_right = 556.0
+margin_right = 398.0
 margin_bottom = 536.0
 custom_fonts/font = SubResource( 4 )
 text = "Start"
 __meta__ = {
 "_edit_use_anchors_": false
 }
+
+[node name="InstructionsButton" type="Button" parent="."]
+margin_left = 439.0
+margin_top = 510.0
+margin_right = 559.0
+margin_bottom = 536.0
+custom_fonts/font = SubResource( 5 )
+text = "Readme..."
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="CreditsButton" type="Button" parent="."]
+margin_left = 602.0
+margin_top = 510.0
+margin_right = 734.0
+margin_bottom = 536.0
+custom_fonts/font = SubResource( 6 )
+text = "Credits..."
+__meta__ = {
+"_edit_use_anchors_": false
+}
 [connection signal="pressed" from="StartButton" to="." method="on_StartButton_pressed"]
+[connection signal="pressed" from="InstructionsButton" to="." method="on_InstructionsButton_pressed"]
+[connection signal="pressed" from="CreditsButton" to="." method="on_CreditsButton_pressed"]
