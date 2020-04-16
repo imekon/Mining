@@ -36,7 +36,6 @@ onready var explosion = $Sounds/Explosion
 onready var Monster = load("res://scenes/Monster.tscn")
 onready var Egg = load("res://scenes/Egg.tscn")
 
-var player_score
 var mineral_score
 var coal_score
 var diamond_score
@@ -63,7 +62,6 @@ func _ready():
 	randomize()
 	Global.player_x = randi() % (MINE_WIDTH - 2) + 1
 	Global.player_y = 1
-	player_score = 0
 	mineral_score = 0
 	coal_score = 0
 	diamond_score = 0
@@ -82,10 +80,13 @@ func _ready():
 	build_mine()
 	
 func _process(delta):
-	score_label.text = 'Score: ' + str(player_score)
+	score_label.text = 'Score: ' + str(Global.player_score)
 	mineral_label.text = 'Minerals: ' + str(mineral_score)
 	coal_label.text = 'Coal: ' + str(coal_score)
 	diamond_label.text = 'Diamonds: ' + str(diamond_score)
+	
+	if diamond_score == 3:
+		start_new_game()
 	
 	var dx = 0
 	var dy = 0
@@ -245,9 +246,9 @@ func process_exploding_gas(to_x, to_y):
 	for egg in hit_eggs:
 		damage_egg(egg)
 		
-	player_score -= 100
-	if player_score < 0:
-		player_score = 0
+	Global.player_score -= 100
+	if Global.player_score < 0:
+		Global.player_score = 0
 		
 	play_explosion_sound()
 	
@@ -285,7 +286,7 @@ func set_digging_position():
 	digging_progress.value = digging_value
 	
 func destroy_block(x, y, block):
-	player_score += int(Block.tile_score[block.tile] * mask_scaling)
+	Global.player_score += int(Block.tile_score[block.tile] * mask_scaling)
 	mine[y][x] = null
 	tilemap.set_cell(x, y, 1)
 	block.queue_free()
@@ -385,3 +386,5 @@ func build_mine():
 func on_EnableSoundButton_pressed():
 	enable_sounds = enable_sounds_button.pressed
 
+func start_new_game():
+	get_tree().change_scene("res://scenes/GameOver.tscn")
