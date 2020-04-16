@@ -14,6 +14,8 @@ const NOISE_PERIOD = 64
 const NOISE_PERSISTANCE = 32
 const NOISE_LACUNARITY = 1
 
+const winning_limits = [ 3, 5, 5, 5, 7, 9 ]
+
 onready var tilemap = $TileMap
 onready var player = $Player
 onready var mineral_label =$CanvasLayer/MineralLabel
@@ -85,7 +87,7 @@ func _process(delta):
 	coal_label.text = 'Coal: ' + str(coal_score)
 	diamond_label.text = 'Diamonds: ' + str(diamond_score)
 	
-	if diamond_score == 3:
+	if diamond_score == winning_limits[Global.player_winning]:
 		start_new_game()
 	
 	var dx = 0
@@ -387,4 +389,8 @@ func on_EnableSoundButton_pressed():
 	enable_sounds = enable_sounds_button.pressed
 
 func start_new_game():
+	Global.player_winning += 1
+	if Global.player_winning > winning_limits.size():
+		Global.player_winning = winning_limits.size() - 1
+		
 	get_tree().change_scene("res://scenes/GameOver.tscn")
