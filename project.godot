@@ -23,6 +23,7 @@ _global_script_class_icons={
 config/name="Don't Break Any Eggs!"
 run/main_scene="res://scenes/Welcome.tscn"
 config/icon="res://images/miner.png"
+config/windows_native_icon="res://mining.ico"
 
 [autoload]
 

@@ -14,6 +14,8 @@ const NOISE_PERIOD = 64
 const NOISE_PERSISTANCE = 32
 const NOISE_LACUNARITY = 1
 
+const TILE_DIAMONDS = 7
+
 const winning_limits = [ 3, 5, 5, 5, 7, 9 ]
 
 onready var tilemap = $TileMap
@@ -37,6 +39,7 @@ onready var explosion = $Sounds/Explosion
 
 onready var Monster = load("res://scenes/Monster.tscn")
 onready var Egg = load("res://scenes/Egg.tscn")
+onready var Sparkles = load("res://scenes/Sparkles.tscn")
 
 var mineral_score
 var coal_score
@@ -49,6 +52,7 @@ var mine = []
 var monsters = []
 var eggs = []
 var hit_sounds = []
+var sparkles = []
 
 # Tiles
 # 0 - barrier, edge of the world
@@ -156,7 +160,7 @@ func try_move_player(dx, dy):
 				mineral_score += 3
 			6:
 				coal_score += 1
-			7:
+			TILE_DIAMONDS:
 				diamond_score += 1
 
 		destroy_block(Global.player_x + dx, Global.player_y + dy, block)
@@ -288,10 +292,18 @@ func set_digging_position():
 	digging_progress.value = digging_value
 	
 func destroy_block(x, y, block):
+	var tile = block.tile
 	Global.player_score += int(Block.tile_score[block.tile] * mask_scaling)
 	mine[y][x] = null
 	tilemap.set_cell(x, y, 1)
 	block.queue_free()
+	
+	if tile == TILE_DIAMONDS:
+		for sparkle in sparkles:
+			if (sparkle.x == x) && (sparkle.y == y):
+				sparkles.erase(sparkle)
+				sparkle.queue_free()
+				break
 	
 func build_mine():
 	var noise = OpenSimplexNoise.new()
@@ -304,20 +316,30 @@ func build_mine():
 	for y in range(0, MINE_HEIGHT):
 		var row = []
 		for x in range(0, MINE_WIDTH):
-			var tile = int((noise.get_noise_2d(x, y) + 1) * 1024) % 4 + 2
-
 			var block = Block.new()
+			var tile = 0
 
-			var percent = randi() % 100
-			if percent > MINE_BAND1:
-				tile = randi() % 3 + 6
-
-			if percent > MINE_BAND2:
-				tile = 9
-			
-			if percent > MINE_BAND3:
-				tile = 10
+			if (x > 0) && (x < MINE_WIDTH - 1) && (y > 0) && (y < MINE_HEIGHT - 1):
+				tile = int((noise.get_noise_2d(x, y) + 1) * 1024) % 4 + 2
+	
+				var percent = randi() % 100
+				if percent > MINE_BAND1:
+					tile = randi() % 3 + 6
+	
+				if percent > MINE_BAND2:
+					tile = 9
 				
+				if percent > MINE_BAND3:
+					tile = 10
+					
+				if tile == TILE_DIAMONDS:
+					var sparkle = Sparkles.instance()
+					sparkle.x = x
+					sparkle.y = y
+					sparkle.position = Vector2(x * 32, y * 32)
+					sparkles.append(sparkle)
+					add_child(sparkle)
+					
 			block.tile = tile
 			block.setup()
 			row.append(block)
