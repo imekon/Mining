@@ -235,6 +235,10 @@ func process_exploding_gas(to_x, to_y):
 		for x in range(to_x - 1, to_x + 2):
 			if mine[y][x] != null:
 				if mine[y][x].tile != 0:
+					var tile = mine[y][x].tile
+					if tile == TILE_DIAMONDS:
+						destroy_sparkle(x, y)
+						
 					mine[y][x] = null
 					tilemap.set_cell(x, y, 1)
 			
@@ -299,11 +303,14 @@ func destroy_block(x, y, block):
 	block.queue_free()
 	
 	if tile == TILE_DIAMONDS:
-		for sparkle in sparkles:
-			if (sparkle.x == x) && (sparkle.y == y):
-				sparkles.erase(sparkle)
-				sparkle.queue_free()
-				break
+		destroy_sparkle(x, y)
+				
+func destroy_sparkle(x, y):
+	for sparkle in sparkles:
+		if (sparkle.x == x) && (sparkle.y == y):
+			sparkles.erase(sparkle)
+			sparkle.queue_free()
+			break
 	
 func build_mine():
 	var noise = OpenSimplexNoise.new()
@@ -354,6 +361,7 @@ func build_mine():
 		for j in range(0, h):
 			for i in range(0, w):
 				if (j + y < MINE_HEIGHT - 2) && (i + x < MINE_WIDTH - 2):
+					destroy_sparkle(i + x, j + y)
 					mine[j + y][i + x] = null
 				
 	for i in range(0, MINE_HEIGHT):

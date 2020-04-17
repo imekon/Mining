@@ -29,6 +29,11 @@ config/windows_native_icon="res://mining.ico"
 
 Global="*res://scripts/Global.gd"
 
+[display]
+
+window/stretch/mode="viewport"
+window/stretch/aspect="keep"
+
 [input]
 
 up={
